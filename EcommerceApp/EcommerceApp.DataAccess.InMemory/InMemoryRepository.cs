@@ -1,4 +1,5 @@
-﻿using EcommerceApp.Core.Models;
+﻿using EcommerceApp.Core.Contracts;
+using EcommerceApp.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace EcommerceApp.DataAccess.InMemory
 {
-    public class InMemoryRepository<T> where T: BaseEntity//The placeholder T can literally be anything just used as tutorial.
+    public class InMemoryRepository<T> : IRepository<T> where T : BaseEntity//The placeholder T can literally be anything just used as tutorial.
     {
         ObjectCache cache = MemoryCache.Default;
         List<T> items;
@@ -27,13 +28,14 @@ namespace EcommerceApp.DataAccess.InMemory
         {
             cache[className] = items;
         }
+      
         public void Insert(T t)
         {
             items.Add(t);
         }
         public void Update(T t)
         {
-            T tToUpdate = items.Find(i=>i.Id==t.Id);
+            T tToUpdate = items.Find(i => i.Id == t.Id);
             if (tToUpdate != null)
             {
                 tToUpdate = t;
@@ -45,7 +47,7 @@ namespace EcommerceApp.DataAccess.InMemory
         }
         public T Find(string Id)
         {
-            T t = items.Find(i=>i.Id==Id);
+            T t = items.Find(i => i.Id == Id);
             if (t != null)
             {
                 return t;
