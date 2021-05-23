@@ -10,6 +10,6 @@ namespace EcommerceApp.Core.Models
     {
         public string BasketId { get; set; }
         public string ProductId { get; set; }
-        public string Quanity { get; set; }
+        public int Quanity { get; set; }
     }
 }
