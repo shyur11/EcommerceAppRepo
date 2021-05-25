@@ -9,6 +9,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using EcommerceApp.WebUI.Models;
+using EcommerceApp.Core.Models;
+using EcommerceApp.Core.Contracts;
 
 namespace EcommerceApp.WebUI.Controllers
 {
@@ -17,15 +19,14 @@ namespace EcommerceApp.WebUI.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private IRepository<Customer> customerRepository;
 
-        public AccountController()
-        {
-        }
+       
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController( IRepository<Customer>customerRepository )
         {
-            UserManager = userManager;
-            SignInManager = signInManager;
+            
+            this.customerRepository = customerRepository;
         }
 
         public ApplicationSignInManager SignInManager
@@ -155,6 +156,19 @@ namespace EcommerceApp.WebUI.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    //register the customer model
+                    Customer customer = new Customer()
+                    {
+                        City = model.City,
+                        Email = model.Email,
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        Province = model.Province,
+                        ZipCode = model.ZipCode,
+                        UserId = user.Id
+                    };
+                    customerRepository.Insert(customer);
+                    customerRepository.Commit();
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
