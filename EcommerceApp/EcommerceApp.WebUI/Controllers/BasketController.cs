@@ -11,9 +11,11 @@ namespace EcommerceApp.WebUI.Controllers
     public class BasketController : Controller
     {
         IBasketService basketService;
-        public BasketController(IBasketService BasketService)
+        IOrderService orderService;
+        public BasketController(IBasketService BasketService,IOrderService OrderService)
         {
             this.basketService = BasketService;
+            this.orderService = OrderService;
         }
         // GET: Basket
         public ActionResult Index()
@@ -36,5 +38,31 @@ namespace EcommerceApp.WebUI.Controllers
             var basketSummary = basketService.GetBacketSummary(this.HttpContext);
             return PartialView(basketSummary);
         }
+
+        public ActionResult Checkout()
+        {
+            return View();
+        }
+
+        [HttpPost]
+
+        public ActionResult Checkout(Order order)
+        {
+            var basketItems = basketService.GetBasketItems(this.HttpContext);
+            order.OrderStatus = "Order Created";
+            //process payment
+            order.OrderStatus = "Payment Processed";
+            orderService.CreateOrder(order, basketItems);
+            basketService.ClearBasket(this.HttpContext);
+            return RedirectToAction("ThankYou", new { OrderId = order.Id });
+        }
+        public ActionResult ThankYou(string OrderID)
+        {
+            ViewBag.OrderId = OrderID;
+            return View();
+        }
+        
+
+
     }
 }
