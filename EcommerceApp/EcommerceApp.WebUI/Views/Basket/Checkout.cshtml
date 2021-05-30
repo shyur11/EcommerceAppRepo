@@ -1,9 +1,9 @@
 ﻿@model EcommerceApp.Core.Models.Order
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Order</h4>
         <hr />
@@ -64,11 +64,17 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Proceed To Payment" class="btn btn-default" />
+                <input type="submit" value="Proceed To Payment" class="btn btn-default" />*
+                @*<a href="#" class="proceed-btn">Proceed to checkout</a>*@
             </div>
         </div>
     </div>
-}
+    <div style="margin:7%" class="container">
+        <h1>
+            Payment Confirmed
+        </h1>
+    </div>
+                 }
 
 <div>
     @Html.ActionLink("Back to Basket", "Index")

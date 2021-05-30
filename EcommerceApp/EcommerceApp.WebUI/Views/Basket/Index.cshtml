@@ -48,10 +48,28 @@
             </td>
         </tr>
     }
+    @{
+        decimal bTotal = Decimal.Ceiling((from p in Model select p.Price * p.Quanity).Sum());
+        
+    }
+
     <tr>
         <td colspan="4" style="text-align:right"><strong>Basket Total</strong></td>
         <td>@String.Format("{0:c}", (from p in Model select p.Price * p.Quanity).Sum())</td>
-        <td><a href="@Url.Action("Checkout","Basket")">Checkout</a></td>
+        @{
+            //string url = "https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_xclick&amount=" + (@bTotal) + "sb-wkdf25969220@business.example.com&item_name=Books_Items&return=https://localhost:44309/Basket/T0hankYou?OrderId=eb99adaf-c083-4d07-ba3c-2c5b0a643a84";
+            string url = "https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_xclick&amount="+(bTotal)+ "&business=JanjuaTailors@Shop.com&item_name=Books&return=https://localhost:44309/Basket/T0hankYou?OrderId=eb99adaf-c083-4d07-ba3c-2c5b0a643a84";
+        }
+        @*<td><a href="@Url.Action("Checkout","Basket")">Checkout</a></td>*@
+        <td><a href="@url">Checkout</a></td>
     </tr>
 
+
 </table>
+<form target="paypal" action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+    <input type="hidden" name="cmd" value="_s-xclick">
+    <input type="hidden" name="hosted_button_id" value="KFCD29SC5LJSL">
+    <input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+    <img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+
